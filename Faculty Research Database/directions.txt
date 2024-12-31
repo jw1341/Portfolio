@@ -1,0 +1,70 @@
+When you first run the program you will see the main menu with 4 options
+case 1 (Login) will allow users to login with a particular email and password to get access to the menu based on the type of user they are [Faculty, Student, Public].
+case 2 (Register) will allow users to register their account to be added to the database which they can use to login later.
+case 3 (Search Faculty Abstract) is used to search the database for faculty users whose abstract contains a particular word and displays it.
+case 4 (Quit) is used to end the program
+
+FOR THE LOGIN PAGE
+
+Test Data To Login As A Faculty User:
+Email - jhabermas@rit.edu
+Password - staffpass123
+
+Test Data To Login As Student User:
+Email - cleclerc@rit.edu
+Password - studentpass123
+
+Test Data To Login As Public User:
+Email - jbond@gmail.com
+Pasword - public123
+
+FOR THE REGISTRATION PAGE
+When the user wants to register their user, they will be provided with three options to pick out their user type.
+case 1 (Faculty) is selected if the user is a faculty
+case 2 (Student) is selected if the user is a student
+case 3 (Public) is selected if the user is an outside organization
+
+STUDENT CRUD FUNCTIONS:
+
+If a student user successfully logs in, they will now have six options
+
+case 1 (Search Faculty Interests) will allow the student user to search for faculty interests which are common to their interests.
+case 2 (View Own Interests) will allow the student user to see their own interests.
+case 3 (Add Interests) will allow the student user to add another interest to their current ones
+case 4 (Delete Interests) will allow the student user to delete their interests based on interest ID.
+case 5 (Update Interests) will allow the student user to update their interests.
+case 6 (Quit) will allow the student user to exit from this menu which will lead them back to the main menu
+
+If student user's login is unsuccessful, they will be asked to try again
+
+FACULTY CRUD FUNCTIONS:
+
+If a faculty user successfully logs in, they will now have seven options
+
+case 1 (Search Student Interests) will allow faculty user to search for a student based on the interest that they have selected from a drop-down list
+case 2 (Insert Abstracts or Interests) will allow the faculty user to insert either the abstract or interest based on the sub-menu
+                case 1 (Insert an Abstract) allows faculty user to insert their abstract by copy pasting the title and abstract.
+                case 2 (Insert an Interest) allows faculty user to insert their interest.
+case 3 (Update Abstracts or Interest) will allow the faculty user to update either the abstract or interest based on the sub-menu
+                case 1 (Update an Abstract) allows faculty user to update their abstract by copy pasting the title or abstract to be changed.
+                case 2 (Update an Interest) allows faculty user to update their interest.
+case 4 (Delete Abstracts or Interest) will allow the faculty user to delete either the abstract or interest based on the sub-menu
+                case 1 (Delete an Abstract) allows faculty user to delete their abstract based on abstract ID number.
+                case 2 (Delete an Interest) allows faculty user to delete their interest based on interest ID.
+case 5 (See Own Interests) will allow the faculty user to see their own interests.
+case 6 (See Own Abstracts) will allow the faculty user to see their own abstracts.
+case 7 (Quit) will allow the faculty user to exit from this menu which will lead them back to the main menu
+
+
+
+
+PUBLIC CRUD FUNCTIONS:
+
+If a public user successfully logs in, they will now have five options
+case 1 (Search for Experts on Interest) will allow public users to search for both students and/or faculty based on the interest that they have selected from a drop-down list
+case 2 (View Own Interests) will allow the public user to see their own interests.
+case 3 (Update Interest) will allow the public user to update their own interests.
+case 4 (Delete Interest) will allow the public user to delete their own interests.
+case 7 (Quit) will allow the public user to exit from this menu which will lead them back to the main menu
+
+
