@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Array';
+  src: url('/Array-SemiboldWide.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ffffff;
+  }
+}
+html{
+  overflow-x: hidden;
+}
+body {
+  /* background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.45)), url('/airbg.jpg'); */
+  background-size: cover;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  width:100%;
+  box-sizing: border-box;
+  position: relative;
+  background-repeat: no-repeat;
+  cursor:crosshair;
+}
+
+.array{
+  font-family: 'Array';
+}
+
+body *{
+  margin:0;
+}
+
+
+
+
+
+
+
+.border-gradient-bottom {
+  position: absolute;
+  width: 300%;
+  height: 1px;
+  opacity: 1;
+  bottom: 0px;
+  right: -250%;
+  border-radius: 50%;
+  animation: star-movement-bottom linear infinite alternate;
+  z-index: 0;
+}
+
+.border-gradient-top {
+  position: absolute;
+  opacity: 1;
+  width: 300%;
+  height:1px;
+  top: 0px;
+  left: -250%;
+  border-radius: 50%;
+  animation: star-movement-top linear infinite alternate;
+  z-index: 0;
+}
+
+.inner-content {
+  background: rgba(0,0,0,0.2);
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  display:flex;
+  padding: 16px 26px;
+  justify-content: space-between;
+  border-radius: 20px;
+  z-index: 1;
+}
+
+@keyframes star-movement-bottom {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100%, 0%);
+    opacity: 0;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100%, 0%);
+    opacity: 0;
+  }
+}
+
+
+@keyframes slideUp {
+  0% {
+      opacity: 0;
+      transform: translateY(-30px); /* Start 20px lower */
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0); /* End at the original position */
+  }
+}
+
+@keyframes wind {
+  0% {
+    transform: translateX(-100px);
+  }
+  100% {
+    transform: translateX(100px);
+  }
+}
+
+@keyframes animategithub {
+  0% {
+    transform: rotate3d(0, 1, 0, 360deg); /* Rotating around the Y-axis */
+  }
+  100% {
+    transform: rotate3d(0, 1, 0, 0deg); /* End of the rotation, back to the starting position */
+  }
+}
+
+
+@keyframes navbaronload {
+  0% {
+    transform :translateY(-200px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+
+@keyframes iconsdeload {
+  0% {
+    transform :translateY(0px);
+  }
+  100% {
+    transform: translateY(-200px);
+  }
+}
+
+@keyframes iconsonload {
+  0% {
+    transform :translateY(200px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.animate-wind{
+  animation: wind 3s linear infinite;
+}
+
+.animate-git{
+  animation: animategithub 2s linear infinite;
+}
+
+.animate-navbar{
+  animation: navbaronload .4s linear;
+}
+
+.animate-icons{
+  animation: iconsonload .2s linear;
+}
+
+.animate-down{
+  animation: iconsdeload .2s linear;
+}
+
+.loader {
+  border: 8px solid #f3f3f3; /* Light gray background */
+  border-top: 8px solid black; /* Blue color for the spinner */
+  border-radius: 50%; /* Makes the loader circular */
+  width: 50px; /* Set the size of the loader */
+  height: 50px; /* Set the size of the loader */
+  animation: spin 1.5s linear infinite; /* Add spin animation */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); /* Start at 0 degrees */
+  }
+  100% {
+    transform: rotate(360deg); /* End at 360 degrees */
+  }
+}

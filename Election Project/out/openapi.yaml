@@ -1,0 +1,758 @@
+openapi: "3.0.0"
+info:
+  title: Society Election API
+  version: "1.0"
+components:
+  schemas:
+    Society:
+      type: object
+      properties:
+        societyID:
+          type: integer
+          format: int64
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        creationDate:
+          type: string
+          format: date
+        deleted:
+          type: boolean
+      required:
+        - name
+        - description
+
+    User:
+      type: object
+      properties:
+        userID:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+          maxLength: 255
+        lastName:
+          type: string
+          maxLength: 255
+        username:
+          type: string
+          maxLength: 30
+        email:
+          type: string
+          maxLength: 255
+        password_hash:
+          type: string
+          maxLength: 255
+        role:
+          type: string
+          enum: [Member, Officer]
+        status:
+          type: string
+          enum: [Active, Inactive]
+        deleted:
+          type: string
+          enum: [Yes, No]
+      required:
+        - firstName
+        - lastName
+        - username
+        - email
+        - password_hash
+
+    EmployeeUser:
+      type: object
+      properties:
+        userID:
+          type: integer
+          format: int64
+        isAdmin:
+          type: boolean
+      required:
+        - userID
+        - isAdmin
+
+    SocietyUser:
+      type: object
+      properties:
+        userID:
+          type: integer
+          format: int64
+        societyID:
+          type: integer
+          format: int64
+        isOfficer:
+          type: boolean
+      required:
+        - userID
+        - societyID
+
+    BallotInfo:
+      type: object
+      properties:
+        ballotID:
+          type: integer
+          format: int64
+        societyID:
+          type: integer
+          format: int64
+        offices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Office'
+        initiatives:
+          type: array
+          items:
+            $ref: '#/components/schemas/Initiative'
+        ballotName:
+          type: string
+          maxLength: 128
+        ballotStartDate:
+          type: string
+          format: date
+        ballotEndDate:
+          type: string
+          format: date
+      required:
+        - societyID
+        - ballotName
+        - ballotStartDate
+        - ballotEndDate
+        - offices
+        - initiatives
+
+    Initiative:
+      type: object
+      properties:
+        initiativeID:
+          type: integer
+          format: int64
+        initiativeName:
+          type: string
+          maxLength: 255
+        initiativeDescription:
+          type: string
+          maxLength: 255
+        initiativeVotingOptions:
+          type: object
+      required:
+        - initiativeName
+        - initiativeDescription
+
+    InitiativeOption:
+      type: object
+      properties:
+        initOptionID:
+          type: integer
+          format: int64
+        optionName:
+          type: string
+          maxLength: 255
+      required:
+        - optionName
+
+    InitiativeResults:
+      type: object
+      properties:
+        ballotID:
+          type: integer
+          format: int64
+        initiativeID:
+          type: integer
+          format: int64
+        initOptionID:
+          type: integer
+          format: int64
+        numVotes:
+          type: integer
+          default: 0
+      required:
+        - ballotID
+        - initiativeID
+        - initOptionID
+
+    Office:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+        officeName:
+          type: string
+        officeNumVotes:
+          type: integer
+      required:
+        - officeName
+
+    OfficeCandidate:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+        candidateId:
+          type: integer
+          format: int64
+      required:
+        - officeId
+        - candidateId
+
+    Candidate:
+      type: object
+      properties:
+        candidateID:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+          maxLength: 255
+        lastName:
+          type: string
+          maxLength: 255
+        candidateImg:
+          type: string
+        candidateDesc:
+          type: string
+        candidateDemographics:
+          type: string
+      required:
+        - firstName
+        - lastName
+
+    OfficeResults:
+      type: object
+      properties:
+        ballotID:
+          type: integer
+          format: int64
+        officeID:
+          type: integer
+          format: int64
+        candidateID:
+          type: integer
+          format: int64
+        numVotes:
+          type: integer
+          default: 0
+      required:
+        - ballotID
+        - officeID
+        - candidateID
+  responses:
+    BadRequest: #400
+      description: The request was invalid or cannot be served.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid request payload."
+    Unauthorized: #401
+      description: The request requires user authentication.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Authentication required."
+    Forbidden: #403
+      description: The user does not have permission to access the resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Access denied."
+    NotFound: #404
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Resource not found."
+        
+paths:
+  /societies:
+    get:
+      summary: Get a list of all societies
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: deleted
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of societies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Society'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create a new society
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Society'
+      responses:
+        '201':
+          description: Society created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Society'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /society-users:
+    get:
+      summary: Get society users
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of society users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SocietyUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Add user to society
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocietyUser'
+      responses:
+        '201':
+          description: User added to society
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocietyUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /users:
+    get:
+      summary: Get users
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [Member, Officer]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Active, Inactive]
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /employee-users:
+    get:
+      summary: Get employee users
+      responses:
+        '200':
+          description: List of employee users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create employee user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUser'
+      responses:
+        '201':
+          description: Employee user created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /ballots:
+    get:
+      summary: Get ballots
+      parameters:
+        - name: societyId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of ballots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BallotInfo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create a new ballot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BallotInfo'
+      responses:
+        '201':
+          description: Ballot created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BallotInfo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /initiatives:
+    get:
+      summary: Get initiatives
+      responses:
+        '200':
+          description: List of initiatives
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Initiative'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create a new initiative
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Initiative'
+      responses:
+        '201':
+          description: Initiative created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Initiative'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /initiative-options:
+    get:
+      summary: Get initiative options
+      parameters:
+        - name: initiativeId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of initiative options
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InitiativeOption'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create initiative option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiativeOption'
+      responses:
+        '201':
+          description: Initiative option created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiativeOption'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /initiative-results:
+    get:
+      summary: Get initiative results
+      parameters:
+        - name: ballotId
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: initiativeId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of initiative results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InitiativeResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /offices:
+    get:
+      summary: Get offices
+      responses:
+        '200':
+          description: List of offices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Office'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create a new office
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Office'
+      responses:
+        '201':
+          description: Office created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Office'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /office-candidates:
+    get:
+      summary: Get office candidates
+      parameters:
+        - name: officeId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of office candidates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfficeCandidate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Add candidate to office
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeCandidate'
+      responses:
+        '201':
+          description: Candidate added to office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeCandidate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /office-results:
+    get:
+      summary: Get office results
+      parameters:
+        - name: ballotId
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: officeId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of office results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfficeResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /candidates:
+    get:
+      summary: Get candidates
+      parameters:
+        - name: officeId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of candidates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Create a new candidate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+      responses:
+        '201':
+          description: Candidate created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'

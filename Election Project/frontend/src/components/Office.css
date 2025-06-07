@@ -1,0 +1,30 @@
+.office {
+    width: 90%;
+    border: 2px solid black;
+    padding: 1.2em;
+    margin:  20px auto;
+}
+
+.office h2 {
+    font-size: 2em;
+}
+
+.candiates {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 1em;
+}
+
+.edit-office {
+    width: 90%;
+    border: 2px solid black;
+    padding: 1.2em;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 100%;
+}
+
+Button {
+    width: fit-content;
+    margin: 15px;
+}

@@ -1,0 +1,21 @@
+.login-button {
+    width: 100%;
+    background-color: #4f46e5; /* indigo-600 */
+    color: white;
+    font-weight: 500;
+    padding-top: 0.625rem;  /* py-2.5 = 10px */
+    padding-bottom: 0.625rem;
+    border-radius: 0.5rem;  /* rounded-lg = 8px */
+    transition: background-color 150ms ease-in-out;
+    cursor: pointer;
+    margin: auto;
+  }
+  
+  .login-button:hover {
+    background-color: #4338ca; /* indigo-700 */
+  }
+
+  .login-button:active {
+    background-color: #2b2479;
+  }
+  
